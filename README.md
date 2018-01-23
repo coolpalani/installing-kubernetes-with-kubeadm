@@ -134,18 +134,17 @@ To make kubectl work for your **non-root user**, you might want to run these com
     ``sudo chown $(id -u):$(id -g) $HOME/.kube/config`` <br />
 Alternatively, if you are the **root user**, you could run this: <br /> 
     ``export KUBECONFIG=/etc/kubernetes/admin.conf`` <br />
-``
-#Install flannel <br />
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+
+#### Install flannel
+``kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
 `` <br />
 The output of kubeadm init will be used later to join minions to the cluster. It looks like the following: <br />
-kubeadm join --token *some_token* 10.1.114.251:6443 --discovery-token-ca-cert-hash sha256:*some_sha*
+**kubeadm join --token *some_token* 10.1.114.251:6443 --discovery-token-ca-cert-hash sha256:*some_sha***
 
 ## Step 5: Join the minions
 Execute the output of previous step on the minions <br />
 The ouput looks like the following: <br />
 ``
-  ···
 This node has joined the cluster:
 * Certificate signing request was sent to master and a response
   was received.
