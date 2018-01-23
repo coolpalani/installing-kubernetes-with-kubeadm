@@ -125,9 +125,32 @@ Kubernetes v1.9.2
 
 At this point, Docker, Kubeadm, Kubelet and Kubectl are installed and properly configure.<br />
 
-## Step 4: Initialize the master and the minions
+## Step 4: Initialize the master
+Execute on the master, the following:
+``kubeadm init –apiserver-advertise-address=10.1.114.251 –pod-network-cidr=10.244.0.0/16``
+To make kubectl work for your **non-root user**, you might want to run these commands: <br />
+    ``mkdir -p $HOME/.kube`` <br />
+    ``sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config`` <br />
+    ``sudo chown $(id -u):$(id -g) $HOME/.kube/config`` <br />
+Alternatively, if you are the **root user**, you could run this: <br /> 
+    ``export KUBECONFIG=/etc/kubernetes/admin.conf`` <br />
+``
+#Install flannel
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+``
+The output of kubeadm init will be used later to join minions to the cluster. It looks like the following:
+kubeadm join --token *some_token* 10.1.114.251:6443 --discovery-token-ca-cert-hash sha256:*some_sha*
 
-
+## Step 5: Join the minions
+Execute the output of previous step on the minions
+The ouput looks like the following:
+``
+  ···
+This node has joined the cluster:
+* Certificate signing request was sent to master and a response
+  was received.
+* The Kubelet was informed of the new secure connection details.
+``
 
 
 
