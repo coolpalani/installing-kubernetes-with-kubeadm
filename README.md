@@ -99,19 +99,19 @@ Log in again and execute the following <br />
 Now, you should check the following: 
 * Connectivity of Docker (try docker pull nginx or something else)
 * Status of Docker service with ``systemctl status docker``. This sould be active and running.
-* Status of kubelet service with ``systemctl status kubelet``. The status of this service may be FAILURE. Check out with ``journalctl -xe`` the cause of failure. The cause should be: "error: unable to load client CA file /etc/kubernetes/pki/ca.crt: open /etc/kubernetes/pki/ca.crt: no such file or directory"
+* Status of kubelet service with ``systemctl status kubelet``. The status of this service may be FAILURE. Check out with ``journalctl -xe`` the cause of failure. The cause should be: **"error: unable to load client CA file /etc/kubernetes/pki/ca.crt: open /etc/kubernetes/pki/ca.crt: no such file or directory"**
 * Also, you can check the versions of docker and kubernetes, as follows:
 docker --version
 kubelet --version
 
 In my case, the output are the following: <br />
-[root@centos-minion-2 ~]# docker --version <br />
+*[root@centos-minion-2 ~]# docker --version *<br />
 Docker version 1.12.6, build ec8512b/1.12.6 <br />
-[root@centos-minion-2 ~]# kubelet --version <br />
+*[root@centos-minion-2 ~]# kubelet --version *<br />
 Kubernetes v1.9.2
 
 
-At this point, Docker, Kubeadm, Kubelet and Kubectl are installed and properly configure.
+At this point, Docker, Kubeadm, Kubelet and Kubectl are installed and properly configure.<br />
 
 
 
