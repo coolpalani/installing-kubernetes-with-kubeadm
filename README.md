@@ -97,10 +97,10 @@ Log in again and execute the following <br />
 
 
 Now, you should check the following: 
-*Connectivity of Docker (try docker pull nginx or something else)
-*Status of Docker service with ``systemctl status docker``. This sould be active and running.
-*Status of kubelet service with ``systemctl status kubelet``. The status of this service may be FAILURE. Check out with ``journalctl -xe`` the cause of failure. The cause should be: "error: unable to load client CA file /etc/kubernetes/pki/ca.crt: open /etc/kubernetes/pki/ca.crt: no such file or directory"
-*Also, you can check the versions of docker and kubernetes, as follows:
+* Connectivity of Docker (try docker pull nginx or something else)
+* Status of Docker service with ``systemctl status docker``. This sould be active and running.
+* Status of kubelet service with ``systemctl status kubelet``. The status of this service may be FAILURE. Check out with ``journalctl -xe`` the cause of failure. The cause should be: "error: unable to load client CA file /etc/kubernetes/pki/ca.crt: open /etc/kubernetes/pki/ca.crt: no such file or directory"
+* Also, you can check the versions of docker and kubernetes, as follows:
 docker --version
 kubelet --version
 
