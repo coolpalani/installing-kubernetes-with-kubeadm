@@ -13,46 +13,44 @@ corporate_proxy=http://10.1.14.89:3128/<br />
 
 
 ## Step 1, Set environment variables 
-``
-#############################################
-# SET VARS
-#############################################
-export centos_master_ip=10.1.114.251
-export centos_minion1_ip=10.1.114.252
-export centos_minion2_ip=10.1.114.253
-export corporate_proxy=http://10.1.14.89:3128/
-#############################################
-# CONFIGURING ENVIRONMENT
-#############################################
-cat >>/etc/hosts <<EOL
-${centos_master_ip} centos-master 
-${centos_minion1_ip} centos-minion-1 
-${centos_minion2_ip} centos-minion-2 
-EOL
-#PROXY CONFIGURATION
-cat >/etc/environment <<EOL
-ftp_proxy=${corporate_proxy}
-http_proxy=${corporate_proxy}
-https_proxy=${corporate_proxy}
-no_proxy=localhost,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
-EOL
-cat /etc/environment
-cat >>/etc/profile <<EOL
-export ftp_proxy=${corporate_proxy}
-export http_proxy=${corporate_proxy}
-export https_proxy=${corporate_proxy}
-export no_proxy=localhost,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
-EOL
-cat /etc/profile
-sudo systemctl restart network
 
-#############################################
-#TURN OFF ALL SWAP DEVICES 
-#############################################
-swapoff -a
-
-logout
-``
+    #############################################
+    # VARS
+    #############################################
+    export centos_master_ip=10.1.114.251
+    export centos_minion1_ip=10.1.114.252
+    export centos_minion2_ip=10.1.114.253
+    export corporate_proxy=http://10.1.14.89:3128/
+    
+    
+    #############################################
+    # CONFIGURING ENVIRONMENT
+    #############################################
+    cat >>/etc/hosts <<EOL
+    ${centos_master_ip} centos-master 
+    ${centos_minion1_ip} centos-minion-1 
+    ${centos_minion2_ip} centos-minion-2 
+    EOL
+    
+    #PROXY CONFIGURATION
+    cat >/etc/environment <<EOL
+    ftp_proxy=${corporate_proxy}
+    http_proxy=${corporate_proxy}
+    https_proxy=${corporate_proxy}
+    no_proxy=localhost,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
+    EOL
+    cat /etc/environment
+    
+    cat >>/etc/profile <<EOL
+    export ftp_proxy=${corporate_proxy}
+    export http_proxy=${corporate_proxy}
+    export https_proxy=${corporate_proxy}
+    export no_proxy=localhost,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
+    EOL
+    cat /etc/profile
+    
+    sudo systemctl restart network
+    
 Log in again and execute the following <br />
 ``
 #############################################
