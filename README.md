@@ -1,4 +1,4 @@
-#Installing kubernetes with kubeadm
+#Installing-kubernetes-with-kubeadm
 Description of instalation of Kubernetes 1.9 with kubeadm in Centos 7 in an environment with a master node and two minions, behind a corporate proxy.
 
 I've created a 3 VM's with Proxmox, using Centos 7 in each one of them. These three are behind a corporate proxy.
