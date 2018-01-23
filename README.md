@@ -18,8 +18,7 @@ Execute the following in all the hosts (Change IPv4 addresses for yours):
     export centos_minion1_ip=10.1.114.252
     export centos_minion2_ip=10.1.114.253
     export corporate_proxy=http://10.1.14.89:3128/
-    
-    
+        
     #############################################
     # CONFIGURING ENVIRONMENT
     #############################################
