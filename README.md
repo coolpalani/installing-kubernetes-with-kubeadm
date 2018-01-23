@@ -103,9 +103,9 @@ docker --version
 kubelet --version
 
 In my case, the output are the following: <br />
-*[root@centos-minion-2 ~]# docker --version *<br />
+*[root@centos-minion-2 ~]# docker --version*<br />
 Docker version 1.12.6, build ec8512b/1.12.6 <br />
-*[root@centos-minion-2 ~]# kubelet --version *<br />
+*[root@centos-minion-2 ~]# kubelet --version*<br />
 Kubernetes v1.9.2
 
 At this point, Docker, Kubeadm, Kubelet and Kubectl are installed and properly configure.<br />
