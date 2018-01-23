@@ -47,49 +47,53 @@ corporate_proxy=http://10.1.14.89:3128/<br />
     export https_proxy=${corporate_proxy}
     export no_proxy=localhost,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
     EOL
-    cat /etc/profile
+    cat /etc/profile  
     
     sudo systemctl restart network
+    #############################################
+    #TURN OFF ALL SWAP DEVICES 
+    #############################################
+    swapoff -a
     
 Log in again and execute the following <br />
-``
-#############################################
-#INSTALLING AND CONFIGURING DOCKER
-#############################################
-yum install -y docker
-systemctl enable docker && systemctl start docker
 
-#Configuring docker behind proxy
-sudo mkdir -p /etc/systemd/system/docker.service.d
-cat >>/etc/systemd/system/docker.service.d/http-proxy.conf <<EOL
-[Service]
-Environment="HTTP_PROXY=${http_proxy}"
-EOL
-sudo systemctl daemon-reload
-sudo systemctl restart docker
+    #############################################
+    #INSTALLING AND CONFIGURING DOCKER
+    #############################################
+    yum install -y docker
+    systemctl enable docker && systemctl start docker
+    
+    #Configuring docker behind proxy
+    sudo mkdir -p /etc/systemd/system/docker.service.d
+    cat >>/etc/systemd/system/docker.service.d/http-proxy.conf <<EOL
+    [Service]
+    Environment="HTTP_PROXY=${http_proxy}"
+    EOL
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker
+    
+    #############################################
+    #INSTALLING KUBEADM, KUBELET AND KUBECTL
+    #############################################
+    cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+    [kubernetes]
+    name=Kubernetes
+    baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    enabled=1
+    gpgcheck=1
+    repo_gpgcheck=1
+    gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    EOF
+    setenforce 0
+    yum install -y kubelet kubeadm kubectl
+    systemctl enable kubelet && systemctl start kubelet
+    
+    cat <<EOF >  /etc/sysctl.d/k8s.conf
+    net.bridge.bridge-nf-call-ip6tables = 1
+    net.bridge.bridge-nf-call-iptables = 1
+    EOF
+    sysctl --system
 
-#############################################
-#INSTALLING KUBEADM, KUBELET AND KUBECTL
-#############################################
-cat <<EOF > /etc/yum.repos.d/kubernetes.repo
-[kubernetes]
-name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-enabled=1
-gpgcheck=1
-repo_gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-EOF
-setenforce 0
-yum install -y kubelet kubeadm kubectl
-systemctl enable kubelet && systemctl start kubelet
-
-cat <<EOF >  /etc/sysctl.d/k8s.conf
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-EOF
-sysctl --system
-``
 
 
 Now, you should check the following: 
