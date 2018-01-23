@@ -52,6 +52,22 @@ Execute the following in all the hosts (Change IPv4 addresses for yours):
     #############################################
     swapoff -a
     
+    
+**IMPORTANT:** To disable completely the swap, edit the file /etc/fstab, and comment **ONLY** the line corresponding to the swap. Example:<br />
+
+    #
+    # /etc/fstab
+    # Created by anaconda on Tue Jan 16 09:39:42 2018
+    #
+    # Accessible filesystems, by reference, are maintained under '/dev/disk'
+    # See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+    #
+    /dev/mapper/centos-root /                        xfs     defaults        0 0
+    UUID=ad15df-f2f5-475... /boot                    xfs     defaults        0 0
+    #/dev/mapper/centos-swap swap                    swap    defaults        0 0
+
+
+
 ## Step 2: Installing Docker, Kubeadm, Kubelet and Kubectl
 Log in again and execute the following in all the hosts:<br />
 
