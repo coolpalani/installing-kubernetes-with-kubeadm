@@ -46,10 +46,19 @@ Execute the following in all the hosts (Change IPv4 addresses for yours):
     cat /etc/profile  
     
     sudo systemctl restart network
+    
     #############################################
     #TURN OFF ALL SWAP DEVICES 
     #############################################
     swapoff -a
+    
+    #############################################
+    #DISABLE FIREWALLD
+    #############################################
+    systemctl stop firewalld
+    systemctl disable firewalld
+     
+     
     
     
 **IMPORTANT:** To disable completely the swap, edit the file /etc/fstab, and comment **ONLY** the line corresponding to the swap. Example:<br />
