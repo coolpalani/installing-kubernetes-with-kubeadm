@@ -8,6 +8,20 @@ centos_minion2_ip=10.1.114.253<br />
 corporate_proxy=http://10.1.14.89:3128/<br />
 
 
+## Step 0 Disable SElinux 
+Edit /etc/sysconfig/selinux as follow:
+
+    # This file controls the state of SELinux on the system.
+    # SELINUX= can take one of these three values:
+    #       enforcing - SELinux security policy is enforced.
+    #       permissive - SELinux prints warnings instead of enforcing.
+    #       disabled - SELinux is fully disabled.
+    SELINUX=disabled
+    # SELINUXTYPE= type of policy in use. Possible values are:
+    #       targeted - Only targeted network daemons are protected.
+    #       strict - Full SELinux protection.
+    SELINUXTYPE=targeted
+
 ## Step 1: Set environment variables 
 Execute the following in all the hosts (Change IPv4 addresses for yours):
 
@@ -57,8 +71,25 @@ Execute the following in all the hosts (Change IPv4 addresses for yours):
     #############################################
     systemctl stop firewalld
     systemctl disable firewalld
-     
-     
+    
+    
+    #############################################
+    #DISABLE SELINUX
+    #############################################
+    cat >/etc/sysconfig/selinux<<EOL
+    # This file controls the state of SELinux on the system.
+    # SELINUX= can take one of these three values:
+    #       enforcing - SELinux security policy is enforced.
+    #       permissive - SELinux prints warnings instead of enforcing.
+    #       disabled - SELinux is fully disabled.
+    SELINUX=permissive
+    # SELINUXTYPE= type of policy in use. Possible values are:
+    #       targeted - Only targeted network daemons are protected.
+    #       strict - Full SELinux protection.
+    SELINUXTYPE=targeted
+    EOL
+
+       
     
     
 **IMPORTANT:** To disable completely the swap, edit the file /etc/fstab, and comment **ONLY** the line corresponding to the swap. Example:<br />
@@ -119,7 +150,9 @@ Log in again and execute the following in all the hosts:<br />
 ## Step 3: Check the installation of the previous components
 
 Now, you should check the following: 
-* Connectivity of Docker (try docker pull nginx or something else)
+* Connectivity of Docker (try docker pull nginx or something else).
+* Check status of firewall (``systemctl stop firewalld;systemctl disable firewalld``)
+* Check status of SElinux (with ``sestatus``) The output should be disabled
 * Status of Docker service with ``systemctl status docker``. This sould be active and running.
 * Status of kubelet service with ``systemctl status kubelet``. The status of this service may be FAILURE. Check out with ``journalctl -xe`` the cause of failure. The cause should be: **"error: unable to load client CA file /etc/kubernetes/pki/ca.crt: open /etc/kubernetes/pki/ca.crt: no such file or directory"**
 * Also, you can check the versions of docker and kubernetes, as follows:
@@ -131,6 +164,9 @@ In my case, the output are the following: <br />
 Docker version 1.12.6, build ec8512b/1.12.6 <br />
 *[root@centos-minion-2 ~]# kubelet --version*<br />
 Kubernetes v1.9.2
+
+
+
 
 At this point, Docker, Kubeadm, Kubelet and Kubectl are installed and properly configure.<br />
 
