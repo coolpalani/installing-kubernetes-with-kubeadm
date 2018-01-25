@@ -212,7 +212,8 @@ After this fix, the output was the following:<br />
     centos-minion-2   NotReady   <none>    45m       v1.9.2
 
 Executing <br />
-    kubectl describe nodes <br /> 
+
+    kubectl describe nodes
 The following error was observed in the two minions nodes: <br /> 
 
     KubeletNotReady runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:docker: network plugin is not ready: cni config uninitialized
