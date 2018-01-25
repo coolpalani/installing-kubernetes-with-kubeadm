@@ -127,7 +127,7 @@ Reboot and Log in again.Then execute the following in **all the hosts**:<br />
     EOF
     sysctl --system
 
-## Step 3: Check the installation of the previous components
+## Step 3: Check the configuration and installation of the previous components
 
 Now, you should check the following: 
 * Connectivity of Docker (try docker pull nginx or something else).
@@ -148,6 +148,7 @@ Kubernetes v1.9.2
 At this point, Docker, Kubeadm, Kubelet and Kubectl are installed and properly configure.<br />
 
 ## Step 4: Initialize the master
+#### Start Kubernetes on master
 Execute on the **master**, the following:<br />
 ``kubeadm init –apiserver-advertise-address=10.1.114.251 –pod-network-cidr=10.244.0.0/16`` <br />
 To make kubectl work for your **non-root user**, you might want to run these commands: <br />
@@ -155,9 +156,16 @@ To make kubectl work for your **non-root user**, you might want to run these com
     ``sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config`` <br />
     ``sudo chown $(id -u):$(id -g) $HOME/.kube/config`` <br />
 Alternatively, if you are the **root user**, you could run this: <br /> 
-    ``export KUBECONFIG=/etc/kubernetes/admin.conf`` <br />
+    
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    cat >>/etc/environment <<EOL
+    KUBECONFIG=/etc/kubernetes/admin.conf
+    EOL   
+    cat >>/etc/profile <<EOL
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    EOL
 
-#### Install flannel
+#### Install Flannel
 ``kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
 `` <br />
 The output of kubeadm init will be used later to join minions to the cluster. It looks like the following: <br />
@@ -167,11 +175,56 @@ The output of kubeadm init will be used later to join minions to the cluster. It
 Execute the output of previous step **on the minions** <br />
 The ouput looks like the following: <br />
 
-``This node has joined the cluster:
-* Certificate signing request was sent to master and a response
-  was received.
-* The Kubelet was informed of the new secure connection details.``
+    This node has joined the cluster:
+    * Certificate signing request was sent to master and a response
+     was received.
+    * The Kubelet was informed of the new secure connection details.
 
+## Step 6: Check the installation
+There are some steps that I recommend to test the success of the installation.<br />
+First, execute the following command in the master:<br />
+    ``kubectl get nodes``<br />
+In my case, I've encountered with all nodes are in status "Not Ready"<br /> 
+
+    NAME              STATUS     ROLES     AGE       VERSION
+    centos-master     NotReady   master    55m       v1.9.2
+    centos-minion-1   NotReady   <none>    45m       v1.9.2
+    centos-minion-2   NotReady   <none>    45m       v1.9.2
+
+To fix this I did the following:<br /> 
+
+Execute the following on master:<br /> 
+    ``kubectl get nodes -o jsonpath='{.items[*].spec.podCIDR}' --all-namespaces``<br /> 
+If the output is empty, edit /etc/kubernetes/manifests/kube-controller-manager.yaml<br /> 
+Add the following lines on the spec of kube-controller-manager command (line 24):<br /> 
+
+    - --allocate-node-cidrs=true
+    - --cluster-cidr=10.244.0.0/16
+    
+Then reload kubelet<br /> 
+    ``systemctl daemon-reload;systemctl restart kubelet`` <br /> 
+
+After this fix, the output was the following:<br /> 
+
+    NAME              STATUS     ROLES     AGE       VERSION
+    centos-master     Ready      master    55m       v1.9.2
+    centos-minion-1   NotReady   <none>    45m       v1.9.2
+    centos-minion-2   NotReady   <none>    45m       v1.9.2
+
+Executing <br />
+    kubectl describe nodes <br /> 
+The following error was observed in the two minions nodes: <br /> 
+
+    KubeletNotReady runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:docker: network plugin is not ready: cni config uninitialized
+
+To fix this I did the following:<br /> 
+edit /etc/systemd/system/kubelet.service.d/10-kubeadm.conf <br /> 
+remove Environment="$KUBELET_NETWORK_ARGS=..." line <br /> 
+
+and then restart kubelet <br /> 
+    ``systemctl daemon-reload;systemctl restart kubelet ``<br /> 
+
+After this points, all the nodes are in Ready status
 
 
 
