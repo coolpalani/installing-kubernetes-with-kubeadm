@@ -1,5 +1,5 @@
 # Installing kubernetes with kubeadm
-Description of instalation of Kubernetes 1.9 with kubeadm on Centos 7 (a master node and two minions), behind a corporate proxy. I've created a 3 VM's with Proxmox, using Centos 7 (1708) in each one of them. 
+Description of instalation of Kubernetes 1.9.2 using kubeadm on Centos 7 (1708). The environment is composed of a master node and two minions, behind a corporate proxy. Flannel is used as network plugin.
 
 ## IPv4 addresses
 centos_master_ip=10.1.114.251<br />
@@ -9,7 +9,7 @@ corporate_proxy=http://10.1.14.89:3128/<br />
 
 
 ## Step 1: Set environment variables 
-Execute the following in all the hosts (Change IPv4 addresses for yours):
+Execute the following in **all the hosts** (Change IPv4 addresses for yours):
 
     #############################################
     # VARS
@@ -35,7 +35,6 @@ Execute the following in all the hosts (Change IPv4 addresses for yours):
     https_proxy=${corporate_proxy}
     no_proxy=localhost,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
     EOL
-    cat /etc/environment
     
     cat >>/etc/profile <<EOL
     export ftp_proxy=${corporate_proxy}
@@ -43,7 +42,6 @@ Execute the following in all the hosts (Change IPv4 addresses for yours):
     export https_proxy=${corporate_proxy}
     export no_proxy=localhost,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
     EOL
-    cat /etc/profile  
     
     sudo systemctl restart network
     
@@ -57,8 +55,7 @@ Execute the following in all the hosts (Change IPv4 addresses for yours):
     #############################################
     systemctl stop firewalld
     systemctl disable firewalld
-    
-    
+   
     #############################################
     #DISABLE SELINUX
     #############################################
@@ -74,9 +71,6 @@ Execute the following in all the hosts (Change IPv4 addresses for yours):
     #       strict - Full SELinux protection.
     SELINUXTYPE=targeted
     EOL
-
-       
-    
     
 **IMPORTANT:** To disable completely the swap, edit the file /etc/fstab, and comment **ONLY** the line corresponding to the swap. Example:<br />
 
@@ -94,7 +88,7 @@ Execute the following in all the hosts (Change IPv4 addresses for yours):
 
 
 ## Step 2: Installing Docker, Kubeadm, Kubelet and Kubectl
-Log in again and execute the following in all the hosts:<br />
+Reboot and Log in again.Then execute the following in **all the hosts**:<br />
 
     #############################################
     #INSTALLING AND CONFIGURING DOCKER
@@ -138,9 +132,9 @@ Log in again and execute the following in all the hosts:<br />
 Now, you should check the following: 
 * Connectivity of Docker (try docker pull nginx or something else).
 * Check status of firewall (``systemctl stop firewalld;systemctl disable firewalld``)
-* Check status of SElinux (with ``sestatus``) The output should be disabled
+* Check status of SElinux (with ``sestatus``) The output should be disabled.
 * Status of Docker service with ``systemctl status docker``. This sould be active and running.
-* Status of kubelet service with ``systemctl status kubelet``. The status of this service may be FAILURE. Check out with ``journalctl -xe`` the cause of failure. The cause should be: **"error: unable to load client CA file /etc/kubernetes/pki/ca.crt: open /etc/kubernetes/pki/ca.crt: no such file or directory"**
+* Status of kubelet service with ``systemctl status kubelet``. The status of this service MAY BE FAILURE. Check out with ``journalctl -xe`` the cause of failure. The cause should be: **"error: unable to load client CA file /etc/kubernetes/pki/ca.crt: open /etc/kubernetes/pki/ca.crt: no such file or directory"**
 * Also, you can check the versions of docker and kubernetes, as follows:
 docker --version
 kubelet --version
@@ -151,13 +145,10 @@ Docker version 1.12.6, build ec8512b/1.12.6 <br />
 *[root@centos-minion-2 ~]# kubelet --version*<br />
 Kubernetes v1.9.2
 
-
-
-
 At this point, Docker, Kubeadm, Kubelet and Kubectl are installed and properly configure.<br />
 
 ## Step 4: Initialize the master
-Execute on the master, the following:<br />
+Execute on the **master**, the following:<br />
 ``kubeadm init –apiserver-advertise-address=10.1.114.251 –pod-network-cidr=10.244.0.0/16`` <br />
 To make kubectl work for your **non-root user**, you might want to run these commands: <br />
     ``mkdir -p $HOME/.kube`` <br />
@@ -173,14 +164,13 @@ The output of kubeadm init will be used later to join minions to the cluster. It
 **kubeadm join --token *some_token* 10.1.114.251:6443 --discovery-token-ca-cert-hash sha256:*some_sha***
 
 ## Step 5: Join the minions
-Execute the output of previous step on the minions <br />
+Execute the output of previous step **on the minions** <br />
 The ouput looks like the following: <br />
-``
-This node has joined the cluster:
+
+``This node has joined the cluster:
 * Certificate signing request was sent to master and a response
   was received.
-* The Kubelet was informed of the new secure connection details.
-``
+* The Kubelet was informed of the new secure connection details.``
 
 
 
