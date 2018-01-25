@@ -1,4 +1,4 @@
-# Installing kubernetes with kubeadm
+# Installing Kubernetes 1.9.2 with kubeadm on Centos 7
 Description of instalation of Kubernetes 1.9.2 using kubeadm on Centos 7 (1708). The environment is composed of a master node and two minions, behind a corporate proxy. Flannel is used as network plugin.
 
 ## IPv4 addresses
