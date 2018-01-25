@@ -68,7 +68,7 @@ Execute the following in all the hosts (Change IPv4 addresses for yours):
     #       enforcing - SELinux security policy is enforced.
     #       permissive - SELinux prints warnings instead of enforcing.
     #       disabled - SELinux is fully disabled.
-    SELINUX=permissive
+    SELINUX=disabled
     # SELINUXTYPE= type of policy in use. Possible values are:
     #       targeted - Only targeted network daemons are protected.
     #       strict - Full SELinux protection.
