@@ -130,11 +130,11 @@ Reboot and Log in again.Then execute the following in **all the hosts**:<br />
 ## Step 3: Check the configuration and installation of the previous components
 
 Now, you should check the following: 
+* Check status of **Firewall** (``systemctl stop firewalld;systemctl disable firewalld``)
+* Check status of **SElinux** (with ``sestatus``) The output should be disabled.
+* Status of **Docker service** with ``systemctl status docker``. This sould be active and running.
 * Connectivity of Docker (try docker pull nginx or something else).
-* Check status of firewall (``systemctl stop firewalld;systemctl disable firewalld``)
-* Check status of SElinux (with ``sestatus``) The output should be disabled.
-* Status of Docker service with ``systemctl status docker``. This sould be active and running.
-* Status of kubelet service with ``systemctl status kubelet``. The status of this service MAY BE FAILURE. Check out with ``journalctl -xe`` the cause of failure. The cause should be: **"error: unable to load client CA file /etc/kubernetes/pki/ca.crt: open /etc/kubernetes/pki/ca.crt: no such file or directory"**
+* Status of **Kubelet service** with ``systemctl status kubelet``. The status of this service **MAY BE FAILURE**. Check out with ``journalctl -xe`` the cause of failure. The cause should be: **"error: unable to load client CA file /etc/kubernetes/pki/ca.crt: open /etc/kubernetes/pki/ca.crt: no such file or directory"**
 * Also, you can check the versions of docker and kubernetes, as follows:
 docker --version
 kubelet --version
