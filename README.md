@@ -8,20 +8,6 @@ centos_minion2_ip=10.1.114.253<br />
 corporate_proxy=http://10.1.14.89:3128/<br />
 
 
-## Step 0 Disable SElinux 
-Edit /etc/sysconfig/selinux as follow:
-
-    # This file controls the state of SELinux on the system.
-    # SELINUX= can take one of these three values:
-    #       enforcing - SELinux security policy is enforced.
-    #       permissive - SELinux prints warnings instead of enforcing.
-    #       disabled - SELinux is fully disabled.
-    SELINUX=disabled
-    # SELINUXTYPE= type of policy in use. Possible values are:
-    #       targeted - Only targeted network daemons are protected.
-    #       strict - Full SELinux protection.
-    SELINUXTYPE=targeted
-
 ## Step 1: Set environment variables 
 Execute the following in all the hosts (Change IPv4 addresses for yours):
 
