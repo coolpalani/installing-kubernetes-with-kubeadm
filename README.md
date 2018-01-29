@@ -33,14 +33,14 @@ Execute the following in **all the hosts** (Change IPv4 addresses for yours):
     ftp_proxy=${corporate_proxy}
     http_proxy=${corporate_proxy}
     https_proxy=${corporate_proxy}
-    no_proxy=localhost,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
+    no_proxy=localhost,127.0.0.1,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
     EOL
     
     cat >>/etc/profile <<EOL
     export ftp_proxy=${corporate_proxy}
     export http_proxy=${corporate_proxy}
     export https_proxy=${corporate_proxy}
-    export no_proxy=localhost,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
+    export no_proxy=localhost,127.0.0.1,127.0.0.0/8,::1,${centos_master_ip},${centos_minion1_ip},${centos_minion2_ip}
     EOL
     
     sudo systemctl restart network
