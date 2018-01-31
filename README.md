@@ -204,29 +204,6 @@ Add the following lines on the spec of kube-controller-manager command (line 24)
 Then reload kubelet<br /> 
     ``systemctl daemon-reload;systemctl restart kubelet`` <br /> 
 
-After this fix, the output was the following:<br /> 
-
-    NAME              STATUS     ROLES     AGE       VERSION
-    centos-master     Ready      master    55m       v1.9.2
-    centos-minion-1   NotReady   <none>    45m       v1.9.2
-    centos-minion-2   NotReady   <none>    45m       v1.9.2
-
-Executing <br />
-
-    kubectl describe nodes
-The following error was observed in the two minions nodes: <br /> 
-
-    KubeletNotReady runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:docker: network plugin is not ready: cni config uninitialized
-
-To fix this I did the following:<br /> 
-edit /etc/systemd/system/kubelet.service.d/10-kubeadm.conf <br /> 
-remove Environment="$KUBELET_NETWORK_ARGS=..." line <br /> 
-
-and then restart kubelet <br /> 
-    ``systemctl daemon-reload;systemctl restart kubelet ``<br /> 
-
-After this points, all the nodes are in Ready status
-
 
 
 
