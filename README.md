@@ -195,7 +195,7 @@ To fix this I did the following:<br />
 
 Execute the following on master:<br /> 
     ``kubectl get nodes -o jsonpath='{.items[*].spec.podCIDR}' --all-namespaces``<br /> 
-If the output is empty, edit /etc/kubernetes/manifests/kube-controller-manager.yaml<br /> 
+If the output is empty, edit /etc/kubernetes/manifests/kube-controller-manager.yaml on the **master node**<br /> 
 Add the following lines on the spec of kube-controller-manager command (line 24):<br /> 
 
     - --allocate-node-cidrs=true
@@ -204,6 +204,29 @@ Add the following lines on the spec of kube-controller-manager command (line 24)
 Then reload kubelet<br /> 
     ``systemctl daemon-reload;systemctl restart kubelet`` <br /> 
 
+After this fix, the output was the following:<br /> 
 
+    NAME              STATUS     ROLES     AGE       VERSION
+    centos-master     Ready      master    55m       v1.9.2
+    centos-minion-1   NotReady   <none>    45m       v1.9.2
+    centos-minion-2   NotReady   <none>    45m       v1.9.2
+
+Executing <br />
+
+    kubectl describe nodes
+The following error was observed in the two minions nodes: <br /> 
+
+    KubeletNotReady runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:docker: network plugin is not ready: ni config uninitialized
+
+To fix this, run the following node in the master:<br /> 
+
+kubectl patch node centos-master -p '{"spec":{"podCIDR":"10.244.0.0/16"}}'
+kubectl patch node centos-minion-1 -p '{"spec":{"podCIDR":"10.244.0.0/16"}}'
+kubectl patch node centos-minion-2 -p '{"spec":{"podCIDR":"10.244.0.0/16"}}'
+
+and then restart kubelet on **each node**<br /> 
+    ``systemctl daemon-reload;systemctl restart kubelet ``<br /> 
+
+After this points, all the nodes are in Ready status
 
 
