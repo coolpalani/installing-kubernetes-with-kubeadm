@@ -229,4 +229,12 @@ and then restart kubelet on **each node**<br />
 
 After this points, all the nodes are in Ready status
 
+### Check corporate proxy configuration
+Now, it is necessary to correctly configure the corporate proxy, in order to access the services and the pods.
+There are two possible situations:
+1. That you have access to the corporate proxy and can edit its rules.<br /> 
+	In this case, you need to define the "no upstream" rules for the pods(10.244.0.0/16) and services (10.96.0.0/12) networks.
+2. That the management of the corporate proxy is not within your reach.<br /> 
+	In this case, you can install and configure tinyproxy on any of the nodes. In my case I have installed it in the master node, and I have configured it with the "no upstream" rules of the previous case.
+
 
