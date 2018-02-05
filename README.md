@@ -220,9 +220,9 @@ The following error was observed in the two minions nodes: <br />
 
 To fix this, run the following node in the master:<br /> 
 
-kubectl patch node centos-master -p '{"spec":{"podCIDR":"10.244.0.0/16"}}'
-kubectl patch node centos-minion-1 -p '{"spec":{"podCIDR":"10.244.0.0/16"}}'
-kubectl patch node centos-minion-2 -p '{"spec":{"podCIDR":"10.244.0.0/16"}}'
+    kubectl patch node centos-master -p '{"spec":{"podCIDR":"10.244.0.0/16"}}'
+    kubectl patch node centos-minion-1 -p '{"spec":{"podCIDR":"10.244.0.0/16"}}'
+    kubectl patch node centos-minion-2 -p '{"spec":{"podCIDR":"10.244.0.0/16"}}'
 
 and then restart kubelet on **each node**<br /> 
     ``systemctl daemon-reload;systemctl restart kubelet ``<br /> 
